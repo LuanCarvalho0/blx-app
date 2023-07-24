@@ -12,8 +12,11 @@ class Produto(BaseModel):
     id: Optional[str] = None
     nome: str
     detalhes: str
-    preco = float
+    preco: float
     disponivel: bool = False
+
+    class Config:
+        orm_mode = True
 
 
 class Pedido(BaseModel):
