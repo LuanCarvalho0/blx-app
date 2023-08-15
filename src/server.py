@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from src.schemas.schemas import Produto, ProdutoSimples, Usuario
 from src.infra.sqlalchemy.config.database import get_db, criar_bd
-from src.infra.sqlalchemy.repositorios.produto import RepositorioProduto
+from src.infra.sqlalchemy.repositorios.repositorio_produto import RepositorioProduto
 from src.infra.sqlalchemy.repositorios.repositorio_usuario import RepositorioUsuario
 
 
@@ -23,6 +23,11 @@ def criar_produto(produto: Produto, db: Session = Depends(get_db)):
 def listar_produtos(db: Session = Depends(get_db)):
     produtos = RepositorioProduto(db).listar()
     return produtos
+
+@app.put('/produtos', status_code=status.HTTP_200_OK, response_model=Produto)
+def atualizar_produto(produto: Produto, db: Session = Depends(get_db)):
+    RepositorioProduto(db).editar(produto)
+    return produto
 
 # USUARIOS
 
