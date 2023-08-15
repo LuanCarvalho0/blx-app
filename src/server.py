@@ -24,9 +24,10 @@ def listar_produtos(db: Session = Depends(get_db)):
     produtos = RepositorioProduto(db).listar()
     return produtos
 
-@app.put('/produtos', status_code=status.HTTP_200_OK, response_model=Produto)
-def atualizar_produto(produto: Produto, db: Session = Depends(get_db)):
-    RepositorioProduto(db).editar(produto)
+@app.put('/produtos/{id}', status_code=status.HTTP_200_OK, response_model=ProdutoSimples)
+def atualizar_produto(id: int, produto: Produto, db: Session = Depends(get_db)):
+    RepositorioProduto(db).editar(id, produto)
+    produto.id = id
     return produto
 
 @app.delete('/produtos/{id}', status_code=status.HTTP_200_OK)
