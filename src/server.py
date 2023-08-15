@@ -29,6 +29,11 @@ def atualizar_produto(produto: Produto, db: Session = Depends(get_db)):
     RepositorioProduto(db).editar(produto)
     return produto
 
+@app.delete('/produtos/{id}', status_code=status.HTTP_200_OK)
+def remover_produto(id: int, db: Session = Depends(get_db)):
+    RepositorioProduto(db).remover(id)
+    return {'msg': 'Produto deletado com sucesso!'}
+
 # USUARIOS
 
 @app.post('/usuarios', status_code=status.HTTP_201_CREATED, response_model=Usuario)
