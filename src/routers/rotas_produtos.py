@@ -19,6 +19,11 @@ def listar_produtos(db: Session = Depends(get_db)):
     produtos = RepositorioProduto(db).listar()
     return produtos
 
+@router.get('/produtos/{id}', status_code=status.HTTP_200_OK, response_model=Produto)
+def exibir_produto(id: int, db: Session = Depends(get_db)):
+    produto_localizado = RepositorioProduto(db).buscarPorId(id)
+    return produto_localizado
+
 @router.put('/produtos/{id}', status_code=status.HTTP_200_OK, response_model=ProdutoSimples)
 def atualizar_produto(id: int, produto: Produto, db: Session = Depends(get_db)):
     RepositorioProduto(db).editar(id, produto)

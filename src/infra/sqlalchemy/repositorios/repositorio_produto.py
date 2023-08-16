@@ -1,4 +1,5 @@
-from sqlalchemy import update, delete
+from fastapi import HTTPException, status
+from sqlalchemy import update, delete, select
 from sqlalchemy.orm import Session
 from src.schemas import schemas
 from src.infra.sqlalchemy.models import models
@@ -23,6 +24,12 @@ class RepositorioProduto():
     def listar(self):
         produtos = self.db.query(models.Produto).all()
         return produtos
+    
+    def buscarPorId(self, id: int):
+        produto = self.db.query(models.Produto).filter(models.Produto.id == id).first()
+        if produto is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
+        return produto
 
     def editar(self, id: int, produto: schemas.Produto):
         update_produto = update(models.Produto). where(
