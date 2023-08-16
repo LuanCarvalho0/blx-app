@@ -2,9 +2,10 @@ from fastapi import APIRouter, status, Depends
 from typing import List
 from sqlalchemy.orm import Session
 from src.schemas.schemas import Produto, ProdutoSimples
-from src.infra.sqlalchemy.config.database import get_db
+from src.infra.sqlalchemy.config.database import get_db, criar_bd
 from src.infra.sqlalchemy.repositorios.repositorio_produto import RepositorioProduto
 
+criar_bd()
 
 router = APIRouter()
 
