@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from sqlalchemy import update, delete, select
+from sqlalchemy import update, delete
 from sqlalchemy.orm import Session
 from src.schemas import schemas
 from src.infra.sqlalchemy.models import models
