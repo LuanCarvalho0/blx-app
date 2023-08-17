@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, Depends, HTTPException
 from typing import List
 from sqlalchemy.orm import Session
-from src.schemas.schemas import Usuario, UsuarioSimples
+from src.schemas.schemas import Usuario, UsuarioSimples, LoginData
 from src.infra.sqlalchemy.config.database import get_db
 from src.infra.sqlalchemy.repositorios.repositorio_usuario import RepositorioUsuario
 from src.infra.providers import hash_provider
@@ -23,3 +23,22 @@ def signup(usuario: Usuario, session: Session = Depends(get_db)):
     usuario_criado = RepositorioUsuario(session).criar(usuario)
     return usuario_criado
 
+@router.post('/token')
+def login(login_data: LoginData, session: Session = Depends(get_db)):
+    senha = login_data.senha
+    telefone = login_data.telefone
+
+    usuario = RepositorioUsuario(session).obter_por_telefone(telefone)
+
+    if not usuario:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, 
+                            detail='Telefone ou senha estão incorretos!')
+    
+    senha_valida = hash_provider.verificar_hash(senha, usuario.senha)
+
+    if not senha_valida:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, 
+                            detail='Senha esta incorreta!')
+    
+    # Gerar o Token JWT
+    return usuario
