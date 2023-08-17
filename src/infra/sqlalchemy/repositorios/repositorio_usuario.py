@@ -21,5 +21,8 @@ class RepositorioUsuario():
         usuarios = self.session.query(models.Usuario).all()
         return usuarios
 
-    def obter():
-        pass
+    def obter_por_telefone(self, telefone):
+        usuario = self.session.query(models.Usuario).where(
+            models.Usuario.telefone == telefone
+        ).first()
+        return usuario
