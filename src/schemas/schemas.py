@@ -45,8 +45,8 @@ class Pedido(BaseModel):
     id: Optional[int] = None
     quantidade: int
     local_entrega: Optional[str] = None
-    tipo_entraga: str
-    observacao: Optional[str] = None
+    tipo_entrega: str
+    observacao: Optional[str] = 'Sem observações'
 
     usuario_id: Optional[int] = None
     produto_id: Optional[int] = None

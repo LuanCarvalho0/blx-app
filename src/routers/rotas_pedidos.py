@@ -8,7 +8,7 @@ from src.infra.sqlalchemy.repositorios.repositorio_pedido import RepositorioPedi
 
 router = APIRouter()
 
-@router.post('/pedidos', status_code=status.HTTP_201_CREATED)
+@router.post('/pedidos', status_code=status.HTTP_201_CREATED, response_model=Pedido)
 def fazer_pedido(pedido: Pedido, session: Session = Depends(get_db)):
     pedido_criado = RepositorioPedido(session).gravar_pedido(pedido)
     return pedido_criado
@@ -18,7 +18,7 @@ def exibir_pedido(id: int, session: Session = Depends(get_db)):
     pedido = RepositorioPedido(session).buscar_por_id(id)
     return pedido
 
-@router.get('/pedidos ', status_code=status.HTTP_200_OK, response_model=List[Pedido])
+@router.get('/pedidos/{usuario_id}/compras', status_code=status.HTTP_200_OK, response_model=List[Pedido])
 def listar_pedidos(usuario_id: int, session: Session = Depends(get_db)):
     pedidos = RepositorioPedido(session).listar_meus_pedidos_por_usuario_id(usuario_id)
     return pedidos
