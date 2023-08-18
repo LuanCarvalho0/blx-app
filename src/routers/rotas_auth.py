@@ -1,11 +1,11 @@
 from fastapi import APIRouter, status, Depends, HTTPException
 from typing import List
 from sqlalchemy.orm import Session
-from src.schemas.schemas import Usuario, UsuarioSimples, LoginData
+from src.schemas.schemas import LoginSucesso, Usuario, UsuarioSimples, LoginData
 from src.infra.sqlalchemy.config.database import get_db
 from src.infra.sqlalchemy.repositorios.repositorio_usuario import RepositorioUsuario
-from src.infra.providers import hash_provider
-
+from src.infra.providers import hash_provider, token_provider
+from src.routers.auth_utils import obter_usuario_logado
 
 router = APIRouter()
 
@@ -41,4 +41,9 @@ def login(login_data: LoginData, session: Session = Depends(get_db)):
                             detail='Senha esta incorreta!')
     
     # Gerar o Token JWT
+    token = token_provider.criar_access_token({'sub': usuario.telefone})
+    return LoginSucesso(usuario=usuario, access_token=token)
+
+@router.get('/me', response_model=UsuarioSimples)
+def me(usuario: Usuario = Depends(obter_usuario_logado)):
     return usuario

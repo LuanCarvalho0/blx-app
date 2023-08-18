@@ -1,7 +1,8 @@
 from fastapi import APIRouter, status, Depends
 from typing import List
 from sqlalchemy.orm import Session
-from src.schemas.schemas import Pedido
+from src.routers.auth_utils import obter_usuario_logado
+from src.schemas.schemas import Pedido, Usuario
 from src.infra.sqlalchemy.config.database import get_db
 from src.infra.sqlalchemy.repositorios.repositorio_pedido import RepositorioPedido
 
@@ -18,9 +19,10 @@ def exibir_pedido(id: int, session: Session = Depends(get_db)):
     pedido = RepositorioPedido(session).buscar_por_id(id)
     return pedido
 
-@router.get('/pedidos/{usuario_id}/compras', status_code=status.HTTP_200_OK, response_model=List[Pedido])
-def listar_pedidos(usuario_id: int, session: Session = Depends(get_db)):
-    pedidos = RepositorioPedido(session).listar_meus_pedidos_por_usuario_id(usuario_id)
+@router.get('/pedidos', status_code=status.HTTP_200_OK, response_model=List[Pedido])
+def listar_pedidos(usuario: Usuario = Depends(obter_usuario_logado), 
+                   session: Session = Depends(get_db)):
+    pedidos = RepositorioPedido(session).listar_meus_pedidos_por_usuario_id(usuario.id)
     return pedidos
 
 @router.get('/pedidos/{usuario_id}/vendas', status_code=status.HTTP_200_OK, response_model=List[Pedido])
